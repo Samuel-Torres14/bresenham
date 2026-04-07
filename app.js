@@ -54,3 +54,8 @@ bresenham(x0, y0, x1, y1, (x, y) => {
 });
 
 tabla.innerHTML = "<tr><th>x</th><th>y</th><th>err</th></tr>";
+
+function plotEscalado(ctx, x, y) {
+    let escala = 10;
+    ctx.fillRect(x * escala, y * escala, 5, 5);
+}
