@@ -1,17 +1,30 @@
 function dibujar() {
-    console.log("dibujar...");
+
+    let x0 = parseInt(document.getElementById("x0").value);
+    let y0 = parseInt(document.getElementById("y0").value);
+    let x1 = parseInt(document.getElementById("x1").value);
+    let y1 = parseInt(document.getElementById("y1").value);
+
+    let canvas = document.getElementById("canvas");
+    let ctx = canvas.getContext("2d");
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Limpiar tabla
+    let tabla = document.getElementById("tabla");
+    tabla.innerHTML = "<tr><th>x</th><th>y</th><th>err</th></tr>";
+
+    // Dibujar ejes
+    dibujarEjes(ctx, canvas.width, canvas.height);
+
+    // Ejecutar Bresenham
+    bresenham(x0, y0, x1, y1, (x, y) => {
+        plotEscalado(ctx, x, y, canvas.height);
+    });
 }
 
-let x0 = parseInt(document.getElementById("x0").value);
-let y0 = parseInt(document.getElementById("y0").value);
-let x1 = parseInt(document.getElementById("x1").value);
-let y1 = parseInt(document.getElementById("y1").value);
 
-let canvas = document.getElementById("canvas");
-let ctx = canvas.getContext("2d");
-
-ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+// Algoritmo de Bresenham con tabla
 function bresenham(x0, y0, x1, y1, plot) {
 
     let dx = Math.abs(x1 - x0);
@@ -22,11 +35,11 @@ function bresenham(x0, y0, x1, y1, plot) {
 
     let err = dx - dy;
 
+    let tabla = document.getElementById("tabla");
+
     while (true) {
 
         plot(x0, y0);
-
-        let tabla = document.getElementById("tabla");
 
         let fila = tabla.insertRow();
         fila.insertCell(0).innerText = x0;
@@ -49,36 +62,10 @@ function bresenham(x0, y0, x1, y1, plot) {
     }
 }
 
-bresenham(x0, y0, x1, y1, (x, y) => {
-    ctx.fillRect(x, y, 2, 2);
-});
 
-tabla.innerHTML = "<tr><th>x</th><th>y</th><th>err</th></tr>";
+//Dibuja puntos con escala y corrige eje Y
 
 function plotEscalado(ctx, x, y, height) {
     let escala = 10;
     let canvasX = x * escala;
-    let canvasY = height - (y * escala);
-    ctx.fillRect(canvasX, canvasY, 5, 5);
-}
-
-bresenham(x0, y0, x1, y1, (x, y) => {
-    plotEscalado(ctx, x, y);
-});
-
-function dibujarEjes(ctx, w, h) {
-    ctx.beginPath();
-    ctx.moveTo(0, h);
-    ctx.lineTo(w, h);
-    ctx.moveTo(0, 0);
-    ctx.lineTo(0, h);
-    ctx.stroke();
-}
-
-for (let i = 0; i < 400; i += 40) {
-    ctx.fillText(i / 10, i, 395);
-    ctx.fillText(i / 10, 5, 400 - i);
-}
-
-ctx.fillStyle = "blue";
-ctx.font = "10px Arial";
+    let canvasY = height - (y
