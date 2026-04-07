@@ -79,3 +79,6 @@ for (let i = 0; i < 400; i += 40) {
     ctx.fillText(i / 10, i, 395);
     ctx.fillText(i / 10, 5, 400 - i);
 }
+
+ctx.fillStyle = "blue";
+ctx.font = "10px Arial";
