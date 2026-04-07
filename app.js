@@ -52,3 +52,4 @@ function bresenham(x0, y0, x1, y1, plot) {
 bresenham(x0, y0, x1, y1, (x, y) => {
     ctx.fillRect(x, y, 2, 2);
 });
+
