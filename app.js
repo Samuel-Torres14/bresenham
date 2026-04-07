@@ -53,3 +53,4 @@ bresenham(x0, y0, x1, y1, (x, y) => {
     ctx.fillRect(x, y, 2, 2);
 });
 
+tabla.innerHTML = "<tr><th>x</th><th>y</th><th>err</th></tr>";
