@@ -59,3 +59,7 @@ function plotEscalado(ctx, x, y) {
     let escala = 10;
     ctx.fillRect(x * escala, y * escala, 5, 5);
 }
+
+bresenham(x0, y0, x1, y1, (x, y) => {
+    plotEscalado(ctx, x, y);
+});
