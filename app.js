@@ -66,3 +66,11 @@ bresenham(x0, y0, x1, y1, (x, y) => {
     plotEscalado(ctx, x, y);
 });
 
+function dibujarEjes(ctx, w, h) {
+    ctx.beginPath();
+    ctx.moveTo(0, h);
+    ctx.lineTo(w, h);
+    ctx.moveTo(0, 0);
+    ctx.lineTo(0, h);
+    ctx.stroke();
+}
