@@ -6,7 +6,13 @@ function dibujar() {
     let y1 = parseInt(document.getElementById("y1").value);
 
     let canvas = document.getElementById("canvas");
+
+    // Ajustar tamaño real del canvas al contenedor
+    canvas.width = canvas.clientWidth;
+    canvas.height = canvas.clientHeight;
+
     let ctx = canvas.getContext("2d");
+
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
