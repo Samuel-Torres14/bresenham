@@ -57,12 +57,6 @@ function bresenham(x0, y0, x1, y1, plot) {
         plot(x0, y0);
 
         // Guardar en tabla
-        let fila = tabla.insertRow();
-        fila.insertCell(0).innerText = x0;
-        fila.insertCell(1).innerText = y0;
-        fila.insertCell(2).innerText = err;
-
-        // Condición de parada
         if (x0 === x1 && y0 === y1) break;
 
         let e2 = 2 * err;
