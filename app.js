@@ -19,7 +19,7 @@ function dibujar() {
     let tabla = document.getElementById("tabla");
     tabla.innerHTML = "<tr><th>x</th><th>y</th><th>err</th></tr>";
 
-    // 🔥 Escala automática
+    // Escala automática
     let maxX = Math.max(x0, x1) + 10;
     let maxY = Math.max(y0, y1) + 10;
 
@@ -37,29 +37,24 @@ function dibujar() {
     bresenham(x0, y0, x1, y1, (x, y) => {
 
         puntos.push({
-            x: x * escala,
-            y: canvas.height - (y * escala)
-        });
+        
+        x: x * escala + 0.5,
+        y: canvas.height - (y * escala) + 0.5
+    });
 
     });
 
-    // 🔥 Dibujar línea suave
+    //Dibujar línea suave
     ctx.beginPath();
-    ctx.strokeStyle = "blue";
-    ctx.lineWidth = 2;
 
-    puntos.forEach((p, i) => {
-        if (i === 0) ctx.moveTo(p.x, p.y);
-        else ctx.lineTo(p.x, p.y);
-    });
+    ctx.moveTo(x0 * escala, canvas.height - y0 * escala);
+    ctx.lineTo(x1 * escala, canvas.height - y1 * escala);
 
     ctx.stroke();
 }
 
 
-/**
- * Cuadrícula gris tenue
- */
+//Cuadrícula gris tenue
 function dibujarCuadricula(ctx, canvas, escala) {
 
     ctx.strokeStyle = "#ddd";
@@ -80,9 +75,7 @@ function dibujarCuadricula(ctx, canvas, escala) {
 }
 
 
-/**
- * Ejes dinámicos con números
- */
+//Ejes dinámicos con números
 function dibujarEjes(ctx, canvas, escala, maxX, maxY) {
 
     ctx.strokeStyle = "black";
@@ -113,9 +106,8 @@ function dibujarEjes(ctx, canvas, escala, maxX, maxY) {
 }
 
 
-/**
- * Bresenham + tabla
- */
+//Bresenham + tabla
+ 
 function bresenham(x0, y0, x1, y1, plot) {
 
     let dx = Math.abs(x1 - x0);
