@@ -1,7 +1,5 @@
-//Función principal que se ejecuta al presionar el botón
 function dibujar() {
 
-    // Obtener valores del usuario
     let x0 = parseInt(document.getElementById("x0").value);
     let y0 = parseInt(document.getElementById("y0").value);
     let x1 = parseInt(document.getElementById("x1").value);
@@ -10,35 +8,108 @@ function dibujar() {
     let canvas = document.getElementById("canvas");
     let ctx = canvas.getContext("2d");
 
-    // Limpiar canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Configuración visual
-    ctx.fillStyle = "blue";
-    ctx.font = "10px Arial";
-
-    // Limpiar tabla
     let tabla = document.getElementById("tabla");
-    tabla.innerHTML = `
-        <tr>
-            <th>x</th>
-            <th>y</th>
-            <th>err</th>
-        </tr>
-    `;
+    tabla.innerHTML = "<tr><th>x</th><th>y</th><th>err</th></tr>";
 
-    // Dibujar ejes
-    dibujarEjes(ctx, canvas.width, canvas.height);
+    // 🔥 Escala automática
+    let maxX = Math.max(x0, x1) + 10;
+    let maxY = Math.max(y0, y1) + 10;
 
-    // Ejecutar algoritmo
+    let escalaX = canvas.width / maxX;
+    let escalaY = canvas.height / maxY;
+
+    let escala = Math.min(escalaX, escalaY);
+
+    dibujarCuadricula(ctx, canvas, escala);
+    dibujarEjes(ctx, canvas, escala, maxX, maxY);
+
+    // Guardar puntos para línea suave
+    let puntos = [];
+
     bresenham(x0, y0, x1, y1, (x, y) => {
-        plotEscalado(ctx, x, y, canvas.height);
+
+        puntos.push({
+            x: x * escala,
+            y: canvas.height - (y * escala)
+        });
+
     });
+
+    // 🔥 Dibujar línea suave
+    ctx.beginPath();
+    ctx.strokeStyle = "blue";
+    ctx.lineWidth = 2;
+
+    puntos.forEach((p, i) => {
+        if (i === 0) ctx.moveTo(p.x, p.y);
+        else ctx.lineTo(p.x, p.y);
+    });
+
+    ctx.stroke();
 }
 
 
-//Algoritmo de Bresenham
- //Dibuja línea y guarda pasos en tabla
+/**
+ * Cuadrícula gris tenue
+ */
+function dibujarCuadricula(ctx, canvas, escala) {
+
+    ctx.strokeStyle = "#ddd";
+
+    for (let x = 0; x < canvas.width; x += escala) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+    }
+
+    for (let y = 0; y < canvas.height; y += escala) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+    }
+}
+
+
+/**
+ * Ejes dinámicos con números
+ */
+function dibujarEjes(ctx, canvas, escala, maxX, maxY) {
+
+    ctx.strokeStyle = "black";
+    ctx.fillStyle = "black";
+    ctx.font = "10px Arial";
+
+    // Eje X
+    ctx.beginPath();
+    ctx.moveTo(0, canvas.height);
+    ctx.lineTo(canvas.width, canvas.height);
+    ctx.stroke();
+
+    // Eje Y
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(0, canvas.height);
+    ctx.stroke();
+
+    // Números eje X
+    for (let i = 0; i <= maxX; i += 10) {
+        ctx.fillText(i, i * escala, canvas.height - 5);
+    }
+
+    // Números eje Y
+    for (let i = 0; i <= maxY; i += 10) {
+        ctx.fillText(i, 5, canvas.height - (i * escala));
+    }
+}
+
+
+/**
+ * Bresenham + tabla
+ */
 function bresenham(x0, y0, x1, y1, plot) {
 
     let dx = Math.abs(x1 - x0);
@@ -53,10 +124,13 @@ function bresenham(x0, y0, x1, y1, plot) {
 
     while (true) {
 
-        // Dibujar punto
         plot(x0, y0);
 
-        // Guardar en tabla
+        let fila = tabla.insertRow();
+        fila.insertCell(0).innerText = x0;
+        fila.insertCell(1).innerText = y0;
+        fila.insertCell(2).innerText = err;
+
         if (x0 === x1 && y0 === y1) break;
 
         let e2 = 2 * err;
@@ -70,43 +144,5 @@ function bresenham(x0, y0, x1, y1, plot) {
             err += dx;
             y0 += sy;
         }
-    }
-}
-
-
-//Convierte coordenadas a canvas (escala + inversión eje Y)
-function plotEscalado(ctx, x, y, height) {
-    let escala = 5;
-
-    let canvasX = x * escala;
-    let canvasY = height - (y * escala);
-
-    ctx.fillRect(canvasX, canvasY, 5, 5);
-}
-
-
-// Dibuja ejes cartesianos con numeración
- 
-function dibujarEjes(ctx, w, h) {
-
-    ctx.beginPath();
-
-    // Eje X
-    ctx.moveTo(0, h);
-    ctx.lineTo(w, h);
-
-    // Eje Y
-    ctx.moveTo(0, 0);
-    ctx.lineTo(0, h);
-
-    ctx.stroke();
-
-    // Escala
-    for (let i = 0; i < w; i += 50) {
-        ctx.fillText(i / 5, i, h - 5);
-    }
-
-    for (let i = 0; i < h; i += 50) {
-        ctx.fillText(i / 5, 5, h - i);
     }
 }
